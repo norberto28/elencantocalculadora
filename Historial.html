@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Encanto del Papel - Cálculo de Ventas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #e74c3c, #3498db);
+            color: white;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+        }
+        button {
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px; /* Espacio entre botones */
+        }
+        button:hover {
+            background-color: #27ae60;
+        }
+        .results {
+            margin-top: 25px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .results p {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .results p strong {
+            font-size: 1.2em;
+            color: #007bff;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .history-section {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            color: #333;
+            margin-top: 20px; /* Espacio arriba del historial */
+        }
+        .history-section h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .history-list {
+            max-height: 300px; /* Altura máxima para la lista de historial */
+            overflow-y: auto; /* Scroll si hay muchos elementos */
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .history-item {
+            border-bottom: 1px dashed #ddd;
+            padding: 10px 0;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+        .history-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .history-item strong {
+            color: #0056b3;
+        }
+        .history-item ul {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0 0 0;
+        }
+        .history-item ul li {
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .clear-history-button {
+            background-color: #dc3545; /* Rojo para limpiar */
+            margin-top: 15px;
+        }
+        .clear-history-button:hover {
+            background-color: #c82333;
+        }
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            color: white;
+            font-size: 0.9em;
+            padding-top: 20px; /* Ajuste para el espacio */
+        }
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>El Encanto del Papel</h1>
+    </div>
+
+    <div class="container">
+        <h2>Cálculo de Reparto de Ventas</h2>
+        <label for="totalVenta">Venta Total del Día ($):</label>
+        <input type="number" id="totalVenta" placeholder="Ej: 1500 o 1500.5" min="0" step="0.5">
+
+        <label for="numTrabajadores">Número de Trabajadores:</label>
+        <input type="number" id="numTrabajadores" placeholder="Ej: 5" min="1" value="1">
+
+        <button onclick="calcularPorcentajes()">Calcular Reparto y Guardar</button>
+
+        <div class="results" id="resultados">
+            </div>
+        <p class="error-message" id="errorMessage"></p>
+    </div>
+
+    <div class="history-section">
+        <h2>Historial de Ventas Diarias</h2>
+        <div id="historyList" class="history-list">
+            </div>
+        <button onclick="clearHistory()" class="clear-history-button">Limpiar Historial Completo</button>
+    </div>
+
+    <div class="footer">
+        <p>Creador: Isay Pérez</p>
+        <p>Contacto WhatsApp: <a href="https://wa.me/522212748128" target="_blank">2212748128</a></p>
+    </div>
+
+    <script>
+        // Función de redondeo personalizada
+        function customRound(num) {
+            const decimalPart = num - Math.floor(num);
+            if (decimalPart >= 0.5) {
+                return Math.ceil(num);
+            } else {
+                return Math.floor(num);
+            }
+        }
+
+        // Función para validar la entrada de la venta total (solo .0 o .5)
+        function isValidTotalSale(value) {
+            const num = parseFloat(value);
+            if (isNaN(num) || num < 0) {
+                return false;
+            }
+            const decimalPart = num % 1;
+            return (decimalPart < 0.001 || Math.abs(decimalPart - 0.5) < 0.001);
+        }
+
+        // Función para obtener la fecha actual en formato legible
+        function getCurrentDate() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            return now.toLocaleDateString('es-ES', options);
+        }
+
+        function calcularPorcentajes() {
+            const totalVentaInput = document.getElementById('totalVenta');
+            const numTrabajadoresInput = document.getElementById('numTrabajadores');
+            const resultadosDiv = document.getElementById('resultados');
+            const errorMessageDiv = document.getElementById('errorMessage');
+
+            errorMessageDiv.textContent = '';
+            resultadosDiv.innerHTML = '';
+
+            const totalVenta = parseFloat(totalVentaInput.value);
+            const numTrabajadores = parseInt(numTrabajadoresInput.value);
+
+            if (!isValidTotalSale(totalVentaInput.value)) {
+                errorMessageDiv.textContent = 'Por favor, introduce un valor válido para la Venta Total del Día (solo números enteros o con .5).';
+                return;
+            }
+
+            if (isNaN(numTrabajadores) || numTrabajadores < 1) {
+                errorMessageDiv.textContent = 'Por favor, introduce un número válido de trabajadores (mínimo 1).';
+                return;
+            }
+
+            const inversionPorcentaje = 0.45;
+            const deudasPorcentaje = 0.20;
+            const trabajadoresPorcentaje = 0.25;
+            const socio1Porcentaje = 0.05;
+            const socio2Porcentaje = 0.05;
+
+            // Calcular montos para Deudas, Trabajadores y Socios (RAW y luego redondeados para mostrar)
+            const deudasMonto_raw = totalVenta * deudasPorcentaje;
+            const trabajadoresMontoTotal_raw = totalVenta * trabajadoresPorcentaje;
+            const socio1Monto_raw = totalVenta * socio1Porcentaje;
+            const socio2Monto_raw = totalVenta * socio2Porcentaje;
+            const montoPorTrabajador_raw = trabajadoresMontoTotal_raw / numTrabajadores;
+
+            const deudasMonto_rounded = customRound(deudasMonto_raw);
+            const trabajadoresMontoTotal_rounded = customRound(trabajadoresMontoTotal_raw);
+            const socio1Monto_rounded = customRound(socio1Monto_raw);
+            const socio2Monto_rounded = customRound(socio2Monto_raw);
+            const montoPorTrabajador_rounded = customRound(montoPorTrabajador_raw);
+
+            // Suma de los montos ya redondeados de las otras categorías
+            const sumOfRoundedOthers = deudasMonto_rounded + trabajadoresMontoTotal_rounded + socio1Monto_rounded + socio2Monto_rounded;
+
+            // La Inversión absorbe la diferencia para cuadrar el total
+            const inversionMonto_final = totalVenta - sumOfRoundedOthers;
+
+            // Mostrar resultados en la sección principal
+            resultadosDiv.innerHTML = `
+                <p>Inversión (45%): <strong>$${inversionMonto_final.toFixed(1)}</strong></p>
+                <p>Deudas (20%): <strong>$${deudasMonto_rounded}</strong></p>
+                <p>Trabajadores (25% total): <strong>$${trabajadoresMontoTotal_rounded}</strong></p>
+                <p style="margin-left: 20px;">Cada Trabajador recibe: <strong>$${montoPorTrabajador_rounded}</strong></p>
+                <p>Socio 1 (5%): <strong>$${socio1Monto_rounded}</strong></p>
+                <p>Socio 2 (5%): <strong>$${socio2Monto_rounded}</strong></p>
+                <hr>
+                <p><strong>Total Repartido: $${totalVenta.toFixed(1)}</strong></p>
+            `;
+
+            // --- GUARDAR EN LOCALSTORAGE ---
+            const dailyRecord = {
+                date: getCurrentDate(),
+                totalVenta: totalVenta.toFixed(1),
+                inversion: inversionMonto_final.toFixed(1),
+                deudas: deudasMonto_rounded,
+                trabajadoresTotal: trabajadoresMontoTotal_rounded,
+                montoPorTrabajador: montoPorTrabajador_rounded,
+                socio1: socio1Monto_rounded,
+                socio2: socio2Monto_rounded
+            };
+
+            // Obtener historial existente o inicializarlo
+            const history = JSON.parse(localStorage.getItem('dailySalesHistory')) || [];
+            history.push(dailyRecord); // Añadir el nuevo registro al final
+            localStorage.setItem('dailySalesHistory', JSON.stringify(history)); // Guardar de nuevo
+
+            // Recargar el historial visible
+            displayHistory();
+
+            // Opcional: Limpiar inputs después de guardar
+            totalVentaInput.value = '';
+            numTrabajadoresInput.value = '1';
+        }
+
+        // --- FUNCIONES PARA EL HISTORIAL ---
+
+        // Función para mostrar el historial guardado
+        function displayHistory() {
+            const historyListDiv = document.getElementById('historyList');
+            historyListDiv.innerHTML = ''; // Limpiar la lista antes de volver a renderizar
+
+            const history = JSON.parse(localStorage.getItem('dailySalesHistory')) || [];
+
+            if (history.length === 0) {
+                historyListDiv.innerHTML = '<p style="text-align: center; color: #555;">No hay registros de ventas anteriores.</p>';
+                return;
+            }
+
+            // Recorrer el historial y crear elementos HTML para cada registro
+            history.forEach((record, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('history-item');
+                itemDiv.innerHTML = `
+                    <h3>Registro del ${record.date}</h3>
+                    <ul>
+                        <li>Venta Total del Día: <strong>$${record.totalVenta}</strong></li>
+                        <li>Inversión (45%): <strong>$${record.inversion}</strong></li>
+                        <li>Deudas (20%): <strong>$${record.deudas}</strong></li>
+                        <li>Trabajadores (25% total): <strong>$${record.trabajadoresTotal}</strong></li>
+                        <li style="margin-left: 20px;">Cada Trabajador: <strong>$${record.montoPorTrabajador}</strong></li>
+                        <li>Socio 1 (5%): <strong>$${record.socio1}</strong></li>
+                        <li>Socio 2 (5%): <strong>$${record.socio2}</strong></li>
+                    </ul>
+                `;
+                historyListDiv.prepend(itemDiv); // Agrega el más reciente al principio
+            });
+        }
+
+        // Función para limpiar todo el historial
+        function clearHistory() {
+            if (confirm('¿Estás seguro de que quieres borrar TODO el historial de ventas? Esta acción no se puede deshacer.')) {
+                localStorage.removeItem('dailySalesHistory');
+                displayHistory(); // Volver a mostrar el historial (ahora vacío)
+            }
+        }
+
+        // Cargar y mostrar el historial cuando la página se carga por primera vez
+        document.addEventListener('DOMContentLoaded', displayHistory);
+    </script>
+</body>
+</html>
