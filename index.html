@@ -1,24 +1,10 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corte Unico Diario</title>
-    <style>
-        :root { --primary: #2563eb; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --accent: #10b981; }
-        body { font-family: sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 450px; }
-        h1 { text-align: center; font-size: 1.5rem; margin-bottom: 20px; }
-        .card { background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input[type="number"] { width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; margin-bottom: 15px; }
-        button { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; }
-        .breakdown-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-        .weekly-total { background-color: var(--accent); color: white; text-align: center; }
-        .weekly-amount { font-size: 2rem; font-weight: bold; }
-        .btn-clear { background-color: #ef4444; font-size: 0.9rem; }
-        .note { font-size: 0.8rem; color: #64748b; margin-top: 5px; font-style: italic;}
-    </style>
+    <title>Corte Único Diario</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
 
@@ -26,7 +12,7 @@
     <h1>📊 Corte Diario (Único)</h1>
 
     <div class="card">
-        <label>Ingresa el Total del Día ($):</label>
+        <label for="amount">Ingresa el Total del Día ($):</label>
         <input type="number" id="amount" placeholder="Ej: 5000" inputmode="decimal">
         <button id="btnGuardar" type="button">Guardar Corte</button>
     </div>
@@ -37,16 +23,16 @@
         <div class="weekly-amount" id="weeklySum">$0.00</div>
     </div>
 
-    <div class="card" id="resultCard" style="display:none; border: 2px solid #2563eb;">
+    <div class="card" id="resultCard" style="display:none; border: 2px solid var(--primary);">
         <h3 style="margin-top:0">✅ Cálculo Realizado:</h3>
         <div class="breakdown-row"><span>Inversión (55%)</span><strong id="resInv">$0.00</strong></div>
         <div class="breakdown-row"><span>Socio 1 (10%)</span><strong id="resP1">$0.00</strong></div>
         <div class="breakdown-row"><span>Socio 2 (10%)</span><strong id="resP2">$0.00</strong></div>
-        <div class="breakdown-row" style="background-color: #fff7ed; padding: 8px 5px; border-radius: 5px;">
-            <span>Deudas (Resto)</span><strong id="resDebt" style="color:#d97706">$0.00</strong>
+        <div class="breakdown-row breakdown-debt">
+            <span>Deudas (Resto)</span><strong id="resDebt">$0.00</strong>
         </div>
         <div class="note text-right">*Centavos ajustados en Deudas</div>
-        <div class="breakdown-row" style="font-size:1.2em; margin-top:10px; border-top: 2px solid #eee;">
+        <div class="breakdown-row breakdown-total">
             <span>TOTAL</span><strong id="resTotal">$0.00</strong>
         </div>
     </div>
@@ -58,155 +44,7 @@
     </div>
 </div>
 
-<script>
-    const btn = document.getElementById('btnGuardar');
-    const STORAGE_KEY = 'corte_data_v4_unico';
-
-    // Función para redondear al .50 más cercano
-    function roundTo50(num) { return Math.round(num * 2) / 2; }
-    function fmt(num) { return '$' + num.toFixed(2); }
-
-    // Obtener fecha en formato simple "DD/MM/AAAA" para comparar
-    function getSimpleDate(dateObj) {
-        return dateObj.toLocaleDateString('es-MX');
-    }
-
-    btn.addEventListener('click', function() {
-        const amountVal = document.getElementById('amount').value;
-        if (!amountVal) { alert("⚠️ Escribe una cantidad primero"); return; }
-        
-        const amount = parseFloat(amountVal);
-        
-        // --- CALCULO MATEMATICO ---
-        let rawInv = amount * 0.55;
-        let rawS1 = amount * 0.10;
-        let rawS2 = amount * 0.10;
-        
-        let inv = roundTo50(rawInv);
-        let socio1 = roundTo50(rawS1);
-        let socio2 = roundTo50(rawS2);
-        let debt = amount - inv - socio1 - socio2;
-        debt = Math.round(debt * 100) / 100; // Limpiar decimales locos
-
-        const breakdown = { inv, debt, socio1, socio2 };
-
-        // Mostrar en pantalla (Preview)
-        document.getElementById('resInv').textContent = fmt(inv);
-        document.getElementById('resDebt').textContent = fmt(debt);
-        document.getElementById('resP1').textContent = fmt(socio1);
-        document.getElementById('resP2').textContent = fmt(socio2);
-        document.getElementById('resTotal').textContent = fmt(amount);
-        document.getElementById('resultCard').style.display = 'block';
-
-        // --- GUARDADO INTELIGENTE (1 por día) ---
-        try {
-            const today = new Date();
-            const todayStr = getSimpleDate(today);
-            
-            let history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            
-            // Buscar si ya existe un registro con la fecha de HOY
-            const existingIndex = history.findIndex(item => getSimpleDate(new Date(item.date)) === todayStr);
-
-            const newRecord = { 
-                id: Date.now(), 
-                date: today.toISOString(), 
-                amount: amount, 
-                breakdown: breakdown 
-            };
-
-            if (existingIndex !== -1) {
-                // YA EXISTE: Preguntar confirmación
-                if (confirm(`⚠️ Ya existe un corte del día ${todayStr} con valor de ${fmt(history[existingIndex].amount)}.\n\n¿Estás seguro que quieres SUSTITUIR la cuenta por esta nueva de ${fmt(amount)}?`)) {
-                    // Reemplazar el existente
-                    history[existingIndex] = newRecord;
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-                    alert("✅ Corte actualizado correctamente.");
-                } else {
-                    // Cancelar operación
-                    return; 
-                }
-            } else {
-                // NO EXISTE: Guardar nuevo al principio
-                history.unshift(newRecord);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-            }
-
-            // Refrescar vistas
-            renderHistory();
-            renderWeeklyTotal();
-            document.getElementById('amount').value = ''; 
-
-        } catch (e) {
-            console.error(e);
-            alert("Error al guardar (posiblemente por el modo vista previa).");
-        }
-    });
-
-    function renderHistory() {
-        try {
-            const list = document.getElementById('historyList');
-            const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            list.innerHTML = '';
-            
-            // Mostrar solo ultimos 7 registros
-            const recentHistory = history.slice(0, 7);
-
-            recentHistory.forEach(item => {
-                const d = new Date(item.date);
-                const fecha = d.toLocaleDateString('es-MX', {weekday:'short', day:'numeric'});
-                
-                list.innerHTML += `
-                <div style="padding:10px 0; border-bottom:1px solid #eee;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-weight:bold; color:#2563eb; text-transform:capitalize;">${fecha}</span>
-                        <span style="font-weight:bold; font-size:1.1em">${fmt(item.amount)}</span>
-                    </div>
-                </div>`;
-            });
-            if(recentHistory.length === 0) list.innerHTML = '<div style="text-align:center; color:#999">Sin registros</div>';
-        } catch(e) {}
-    }
-
-    function renderWeeklyTotal() {
-        try {
-            const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            const today = new Date();
-            
-            const dayOfWeek = today.getDay(); 
-            const distToMonday = (dayOfWeek + 6) % 7; 
-            const monday = new Date(today);
-            monday.setDate(today.getDate() - distToMonday);
-            monday.setHours(0,0,0,0);
-
-            let total = 0;
-            history.forEach(item => {
-                if (new Date(item.date) >= monday) total += item.amount;
-            });
-
-            document.getElementById('weeklySum').textContent = fmt(total);
-            
-            const sunday = new Date(monday);
-            sunday.setDate(monday.getDate() + 6);
-            document.getElementById('weekRange').textContent = 
-                `${monday.getDate()}/${monday.getMonth()+1} - ${sunday.getDate()}/${sunday.getMonth()+1}`;
-
-        } catch(e) {}
-    }
-
-    function clearData() {
-        if(confirm('¿Borrar TODO el historial?')) {
-            localStorage.removeItem(STORAGE_KEY);
-            renderHistory();
-            renderWeeklyTotal();
-            document.getElementById('resultCard').style.display = 'none';
-        }
-    }
-
-    // Iniciar
-    renderHistory();
-    renderWeeklyTotal();
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
