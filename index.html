@@ -1,381 +1,212 @@
-<!DOCTYPE html>
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Encanto del Papel - Cálculo de Ventas</title>
+    <title>Corte Unico Diario</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background: linear-gradient(to right, #e74c3c, #3498db);
-            color: white;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            color: white;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        .container {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            width: 90%;
-            max-width: 500px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        input[type="number"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            color: #333;
-        }
-        button {
-            background-color: #2ecc71;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
-            width: 100%;
-            transition: background-color 0.3s ease;
-            margin-bottom: 10px;
-        }
-        button:hover {
-            background-color: #27ae60;
-        }
-        .results {
-            margin-top: 25px;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        .results p {
-            margin-bottom: 10px;
-            font-size: 1.1em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .results p strong {
-            font-size: 1.2em;
-            color: #007bff;
-        }
-        .error-message {
-            color: red;
-            text-align: center;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        .history-section {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            width: 90%;
-            max-width: 500px;
-            color: #333;
-            margin-top: 20px;
-        }
-        .history-section h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .history-list {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #f9f9f9;
-        }
-        .history-item {
-            border-bottom: 1px dashed #ddd;
-            padding: 10px 0;
-            margin-bottom: 10px;
-            font-size: 0.95em;
-            position: relative; /* Para posicionar el botón de eliminar */
-        }
-        .history-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-        .history-item strong {
-            color: #0056b3;
-        }
-        .history-item ul {
-            list-style: none;
-            padding: 0;
-            margin: 5px 0 0 0;
-        }
-        .history-item ul li {
-            margin-bottom: 3px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .clear-history-button {
-            background-color: #dc3545;
-            margin-top: 15px;
-        }
-        .clear-history-button:hover {
-            background-color: #c82333;
-        }
-        .delete-item-button {
-            background-color: #ffc107; /* Amarillo para eliminar individual */
-            color: #333;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 0.8em;
-            position: absolute; /* Posiciona el botón */
-            top: 10px;
-            right: 10px;
-            transition: background-color 0.3s ease;
-        }
-        .delete-item-button:hover {
-            background-color: #e0a800;
-        }
-        .footer {
-            margin-top: auto;
-            text-align: center;
-            color: white;
-            font-size: 0.9em;
-            padding-top: 20px;
-        }
-        .footer a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
+        :root { --primary: #2563eb; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --accent: #10b981; }
+        body { font-family: sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 450px; }
+        h1 { text-align: center; font-size: 1.5rem; margin-bottom: 20px; }
+        .card { background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input[type="number"] { width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; margin-bottom: 15px; }
+        button { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .weekly-total { background-color: var(--accent); color: white; text-align: center; }
+        .weekly-amount { font-size: 2rem; font-weight: bold; }
+        .btn-clear { background-color: #ef4444; font-size: 0.9rem; }
+        .note { font-size: 0.8rem; color: #64748b; margin-top: 5px; font-style: italic;}
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>El Encanto del Papel</h1>
+
+<div class="container">
+    <h1>📊 Corte Diario (Único)</h1>
+
+    <div class="card">
+        <label>Ingresa el Total del Día ($):</label>
+        <input type="number" id="amount" placeholder="Ej: 5000" inputmode="decimal">
+        <button id="btnGuardar" type="button">Guardar Corte</button>
     </div>
 
-    <div class="container">
-        <h2>Cálculo de Reparto de Ventas</h2>
-        <label for="totalVenta">Venta Total del Día ($):</label>
-        <input type="number" id="totalVenta" placeholder="Ej: 1500 o 1500.5" min="0" step="0.5">
-
-        <label for="numTrabajadores">Número de Trabajadores:</label>
-        <input type="number" id="numTrabajadores" placeholder="Ej: 5" min="1" value="1">
-
-        <button onclick="calcularPorcentajes()">Calcular Reparto y Guardar</button>
-
-        <div class="results" id="resultados">
-            </div>
-        <p class="error-message" id="errorMessage"></p>
+    <div class="card weekly-total">
+        <div id="weekRange" style="font-size:0.9em; opacity:0.9">Semana actual</div>
+        <div>Total Acumulado</div>
+        <div class="weekly-amount" id="weeklySum">$0.00</div>
     </div>
 
-    <div class="history-section">
-        <h2>Historial de Ventas Diarias</h2>
-        <div id="historyList" class="history-list">
-            </div>
-        <button onclick="clearHistory()" class="clear-history-button">Limpiar Historial Completo</button>
+    <div class="card" id="resultCard" style="display:none; border: 2px solid #2563eb;">
+        <h3 style="margin-top:0">✅ Cálculo Realizado:</h3>
+        <div class="breakdown-row"><span>Inversión (55%)</span><strong id="resInv">$0.00</strong></div>
+        <div class="breakdown-row"><span>Socio 1 (10%)</span><strong id="resP1">$0.00</strong></div>
+        <div class="breakdown-row"><span>Socio 2 (10%)</span><strong id="resP2">$0.00</strong></div>
+        <div class="breakdown-row" style="background-color: #fff7ed; padding: 8px 5px; border-radius: 5px;">
+            <span>Deudas (Resto)</span><strong id="resDebt" style="color:#d97706">$0.00</strong>
+        </div>
+        <div class="note text-right">*Centavos ajustados en Deudas</div>
+        <div class="breakdown-row" style="font-size:1.2em; margin-top:10px; border-top: 2px solid #eee;">
+            <span>TOTAL</span><strong id="resTotal">$0.00</strong>
+        </div>
     </div>
 
-    <div class="footer">
-        <p>Creador: Isay Pérez</p>
-        <p>Contacto WhatsApp: <a href="https://wa.me/522212748128" target="_blank">2212748128</a></p>
+    <div class="card">
+        <h3>📅 Historial (7 días)</h3>
+        <div id="historyList"></div>
+        <button class="btn-clear" onclick="clearData()">Borrar todo</button>
     </div>
+</div>
 
-    <script>
-        // Función de redondeo personalizada
-        function customRound(num) {
-            const decimalPart = num - Math.floor(num);
-            if (decimalPart >= 0.5) {
-                return Math.ceil(num);
-            } else {
-                return Math.floor(num);
-            }
-        }
+<script>
+    const btn = document.getElementById('btnGuardar');
+    const STORAGE_KEY = 'corte_data_v4_unico';
 
-        // Función para validar la entrada de la venta total (solo .0 o .5)
-        function isValidTotalSale(value) {
-            const num = parseFloat(value);
-            if (isNaN(num) || num < 0) {
-                return false;
-            }
-            const decimalPart = num % 1;
-            return (decimalPart < 0.001 || Math.abs(decimalPart - 0.5) < 0.001);
-        }
+    // Función para redondear al .50 más cercano
+    function roundTo50(num) { return Math.round(num * 2) / 2; }
+    function fmt(num) { return '$' + num.toFixed(2); }
 
-        // Función para obtener la fecha actual en formato legible
-        function getCurrentDate() {
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            return now.toLocaleDateString('es-ES', options);
-        }
+    // Obtener fecha en formato simple "DD/MM/AAAA" para comparar
+    function getSimpleDate(dateObj) {
+        return dateObj.toLocaleDateString('es-MX');
+    }
 
-        function calcularPorcentajes() {
-            const totalVentaInput = document.getElementById('totalVenta');
-            const numTrabajadoresInput = document.getElementById('numTrabajadores');
-            const resultadosDiv = document.getElementById('resultados');
-            const errorMessageDiv = document.getElementById('errorMessage');
+    btn.addEventListener('click', function() {
+        const amountVal = document.getElementById('amount').value;
+        if (!amountVal) { alert("⚠️ Escribe una cantidad primero"); return; }
+        
+        const amount = parseFloat(amountVal);
+        
+        // --- CALCULO MATEMATICO ---
+        let rawInv = amount * 0.55;
+        let rawS1 = amount * 0.10;
+        let rawS2 = amount * 0.10;
+        
+        let inv = roundTo50(rawInv);
+        let socio1 = roundTo50(rawS1);
+        let socio2 = roundTo50(rawS2);
+        let debt = amount - inv - socio1 - socio2;
+        debt = Math.round(debt * 100) / 100; // Limpiar decimales locos
 
-            errorMessageDiv.textContent = '';
-            resultadosDiv.innerHTML = '';
+        const breakdown = { inv, debt, socio1, socio2 };
 
-            const totalVenta = parseFloat(totalVentaInput.value);
-            const numTrabajadores = parseInt(numTrabajadoresInput.value);
+        // Mostrar en pantalla (Preview)
+        document.getElementById('resInv').textContent = fmt(inv);
+        document.getElementById('resDebt').textContent = fmt(debt);
+        document.getElementById('resP1').textContent = fmt(socio1);
+        document.getElementById('resP2').textContent = fmt(socio2);
+        document.getElementById('resTotal').textContent = fmt(amount);
+        document.getElementById('resultCard').style.display = 'block';
 
-            if (!isValidTotalSale(totalVentaInput.value)) {
-                errorMessageDiv.textContent = 'Por favor, introduce un valor válido para la Venta Total del Día (solo números enteros o con .5).';
-                return;
-            }
+        // --- GUARDADO INTELIGENTE (1 por día) ---
+        try {
+            const today = new Date();
+            const todayStr = getSimpleDate(today);
+            
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            
+            // Buscar si ya existe un registro con la fecha de HOY
+            const existingIndex = history.findIndex(item => getSimpleDate(new Date(item.date)) === todayStr);
 
-            if (isNaN(numTrabajadores) || numTrabajadores < 1) {
-                errorMessageDiv.textContent = 'Por favor, introduce un número válido de trabajadores (mínimo 1).';
-                return;
-            }
-
-            const inversionPorcentaje = 0.45;
-            const deudasPorcentaje = 0.20;
-            const trabajadoresPorcentaje = 0.25;
-            const socio1Porcentaje = 0.05;
-            const socio2Porcentaje = 0.05;
-
-            // Calcular montos para Deudas, Trabajadores y Socios (RAW y luego redondeados para mostrar)
-            const deudasMonto_raw = totalVenta * deudasPorcentaje;
-            const trabajadoresMontoTotal_raw = totalVenta * trabajadoresPorcentaje;
-            const socio1Monto_raw = totalVenta * socio1Porcentaje;
-            const socio2Monto_raw = totalVenta * socio2Porcentaje;
-            const montoPorTrabajador_raw = trabajadoresMontoTotal_raw / numTrabajadores;
-
-            const deudasMonto_rounded = customRound(deudasMonto_raw);
-            const trabajadoresMontoTotal_rounded = customRound(trabajadoresMontoTotal_raw);
-            const socio1Monto_rounded = customRound(socio1Monto_raw);
-            const socio2Monto_rounded = customRound(socio2Monto_raw);
-            const montoPorTrabajador_rounded = customRound(montoPorTrabajador_raw);
-
-            // Suma de los montos ya redondeados de las otras categorías
-            const sumOfRoundedOthers = deudasMonto_rounded + trabajadoresMontoTotal_rounded + socio1Monto_rounded + socio2Monto_rounded;
-
-            // La Inversión absorbe la diferencia para cuadrar el total
-            const inversionMonto_final = totalVenta - sumOfRoundedOthers;
-
-            // Mostrar resultados en la sección principal
-            resultadosDiv.innerHTML = `
-                <p>Inversión (45%): <strong>$${inversionMonto_final.toFixed(1)}</strong></p>
-                <p>Deudas (20%): <strong>$${deudasMonto_rounded}</strong></p>
-                <p>Trabajadores (25% total): <strong>$${trabajadoresMontoTotal_rounded}</strong></p>
-                <p style="margin-left: 20px;">Cada Trabajador recibe: <strong>$${montoPorTrabajador_rounded}</strong></p>
-                <p>Socio 1 (5%): <strong>$${socio1Monto_rounded}</strong></p>
-                <p>Socio 2 (5%): <strong>$${socio2Monto_rounded}</strong></p>
-                <hr>
-                <p><strong>Total Repartido: $${totalVenta.toFixed(1)}</strong></p>
-            `;
-
-            // --- GUARDAR EN LOCALSTORAGE ---
-            const dailyRecord = {
-                // Generar un ID único para cada registro, útil para borrarlo individualmente
-                id: Date.now(), // Timestamp como ID único
-                date: getCurrentDate(),
-                totalVenta: totalVenta.toFixed(1),
-                inversion: inversionMonto_final.toFixed(1),
-                deudas: deudasMonto_rounded,
-                trabajadoresTotal: trabajadoresMontoTotal_rounded,
-                montoPorTrabajador: montoPorTrabajador_rounded,
-                socio1: socio1Monto_rounded,
-                socio2: socio2Monto_rounded
+            const newRecord = { 
+                id: Date.now(), 
+                date: today.toISOString(), 
+                amount: amount, 
+                breakdown: breakdown 
             };
 
-            const history = JSON.parse(localStorage.getItem('dailySalesHistory')) || [];
-            history.push(dailyRecord);
-            localStorage.setItem('dailySalesHistory', JSON.stringify(history));
-
-            displayHistory(); // Recargar el historial visible
-
-            totalVentaInput.value = '';
-            numTrabajadoresInput.value = '1';
-        }
-
-        // --- FUNCIONES PARA EL HISTORIAL ---
-
-        // Función para eliminar un elemento específico del historial
-        function deleteHistoryItem(idToDelete) {
-            if (confirm('¿Estás seguro de que quieres borrar este registro?')) {
-                let history = JSON.parse(localStorage.getItem('dailySalesHistory')) || [];
-                // Filtrar el array para crear uno nuevo sin el elemento con el ID a borrar
-                history = history.filter(record => record.id !== idToDelete);
-                localStorage.setItem('dailySalesHistory', JSON.stringify(history));
-                displayHistory(); // Volver a mostrar el historial actualizado
-            }
-        }
-
-        // Función para mostrar el historial guardado
-        function displayHistory() {
-            const historyListDiv = document.getElementById('historyList');
-            historyListDiv.innerHTML = '';
-
-            const history = JSON.parse(localStorage.getItem('dailySalesHistory')) || [];
-
-            if (history.length === 0) {
-                historyListDiv.innerHTML = '<p style="text-align: center; color: #555;">No hay registros de ventas anteriores.</p>';
-                return;
+            if (existingIndex !== -1) {
+                // YA EXISTE: Preguntar confirmación
+                if (confirm(`⚠️ Ya existe un corte del día ${todayStr} con valor de ${fmt(history[existingIndex].amount)}.\n\n¿Estás seguro que quieres SUSTITUIR la cuenta por esta nueva de ${fmt(amount)}?`)) {
+                    // Reemplazar el existente
+                    history[existingIndex] = newRecord;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+                    alert("✅ Corte actualizado correctamente.");
+                } else {
+                    // Cancelar operación
+                    return; 
+                }
+            } else {
+                // NO EXISTE: Guardar nuevo al principio
+                history.unshift(newRecord);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
             }
 
-            history.forEach((record) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.classList.add('history-item');
-                itemDiv.innerHTML = `
-                    <h3>Registro del ${record.date}</h3>
-                    <ul>
-                        <li>Venta Total del Día: <strong>$${record.totalVenta}</strong></li>
-                        <li>Inversión (45%): <strong>$${record.inversion}</strong></li>
-                        <li>Deudas (20%): <strong>$${record.deudas}</strong></li>
-                        <li>Trabajadores (25% total): <strong>$${record.trabajadoresTotal}</strong></li>
-                        <li style="margin-left: 20px;">Cada Trabajador: <strong>$${record.montoPorTrabajador}</strong></li>
-                        <li>Socio 1 (5%): <strong>$${record.socio1}</strong></li>
-                        <li>Socio 2 (5%): <strong>$${record.socio2}</strong></li>
-                    </ul>
-                    <button class="delete-item-button" onclick="deleteHistoryItem(${record.id})">Eliminar</button>
-                `;
-                historyListDiv.prepend(itemDiv); // Agrega el más reciente al principio
+            // Refrescar vistas
+            renderHistory();
+            renderWeeklyTotal();
+            document.getElementById('amount').value = ''; 
+
+        } catch (e) {
+            console.error(e);
+            alert("Error al guardar (posiblemente por el modo vista previa).");
+        }
+    });
+
+    function renderHistory() {
+        try {
+            const list = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            list.innerHTML = '';
+            
+            // Mostrar solo ultimos 7 registros
+            const recentHistory = history.slice(0, 7);
+
+            recentHistory.forEach(item => {
+                const d = new Date(item.date);
+                const fecha = d.toLocaleDateString('es-MX', {weekday:'short', day:'numeric'});
+                
+                list.innerHTML += `
+                <div style="padding:10px 0; border-bottom:1px solid #eee;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:bold; color:#2563eb; text-transform:capitalize;">${fecha}</span>
+                        <span style="font-weight:bold; font-size:1.1em">${fmt(item.amount)}</span>
+                    </div>
+                </div>`;
             });
-        }
+            if(recentHistory.length === 0) list.innerHTML = '<div style="text-align:center; color:#999">Sin registros</div>';
+        } catch(e) {}
+    }
 
-        // Función para limpiar todo el historial
-        function clearHistory() {
-            if (confirm('¿Estás seguro de que quieres borrar TODO el historial de ventas? Esta acción no se puede deshacer.')) {
-                localStorage.removeItem('dailySalesHistory');
-                displayHistory();
-            }
-        }
+    function renderWeeklyTotal() {
+        try {
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const today = new Date();
+            
+            const dayOfWeek = today.getDay(); 
+            const distToMonday = (dayOfWeek + 6) % 7; 
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - distToMonday);
+            monday.setHours(0,0,0,0);
 
-        // Cargar y mostrar el historial cuando la página se carga por primera vez
-        document.addEventListener('DOMContentLoaded', displayHistory);
-    </script>
+            let total = 0;
+            history.forEach(item => {
+                if (new Date(item.date) >= monday) total += item.amount;
+            });
+
+            document.getElementById('weeklySum').textContent = fmt(total);
+            
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            document.getElementById('weekRange').textContent = 
+                `${monday.getDate()}/${monday.getMonth()+1} - ${sunday.getDate()}/${sunday.getMonth()+1}`;
+
+        } catch(e) {}
+    }
+
+    function clearData() {
+        if(confirm('¿Borrar TODO el historial?')) {
+            localStorage.removeItem(STORAGE_KEY);
+            renderHistory();
+            renderWeeklyTotal();
+            document.getElementById('resultCard').style.display = 'none';
+        }
+    }
+
+    // Iniciar
+    renderHistory();
+    renderWeeklyTotal();
+</script>
+
 </body>
 </html>
