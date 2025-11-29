@@ -1,0 +1,132 @@
+/* Variables de color */
+:root { 
+    --primary: #2563eb; 
+    --bg: #f1f5f9; 
+    --card: #ffffff; 
+    --text: #1e293b; 
+    --accent: #10b981; 
+    --warning: #d97706; /* Nuevo para Deudas */
+    --warning-bg: #fff7ed; /* Nuevo para fondo de Deudas */
+}
+
+/* Estilos Generales */
+body { 
+    font-family: sans-serif; 
+    background-color: var(--bg); 
+    color: var(--text); 
+    margin: 0; 
+    padding: 15px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+}
+
+.container { 
+    width: 100%; 
+    max-width: 450px; 
+}
+
+h1 { 
+    text-align: center; 
+    font-size: 1.5rem; 
+    margin-bottom: 20px; 
+}
+
+/* Estilo de Tarjeta (Card) */
+.card { 
+    background: var(--card); 
+    padding: 20px; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    margin-bottom: 20px; 
+}
+
+/* Formularios */
+label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: bold; 
+}
+
+input[type="number"] { 
+    width: 100%; 
+    padding: 15px; 
+    font-size: 1.2rem; 
+    border: 2px solid #e2e8f0; 
+    border-radius: 10px; 
+    box-sizing: border-box; 
+    margin-bottom: 15px; 
+}
+
+/* Botón Principal */
+button { 
+    width: 100%; 
+    padding: 15px; 
+    background-color: var(--primary); 
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    font-size: 1.1rem; 
+    font-weight: bold; 
+    margin-bottom: 10px; 
+    cursor: pointer; /* Añadir cursor para mejor UX */
+    transition: background-color 0.3s;
+}
+button:hover {
+    background-color: #1d4ed8; /* Un tono más oscuro en hover */
+}
+
+/* Distribución y Total Semanal */
+.breakdown-row { 
+    display: flex; 
+    justify-content: space-between; 
+    padding: 8px 0; 
+    border-bottom: 1px solid #f0f0f0; 
+}
+
+.breakdown-debt { /* Estilo específico para la fila de Deudas */
+    background-color: var(--warning-bg); 
+    padding: 8px 5px; 
+    border-radius: 5px;
+}
+.breakdown-debt strong {
+    color: var(--warning);
+}
+
+.breakdown-total { /* Estilo específico para la fila TOTAL */
+    font-size: 1.2em; 
+    margin-top: 10px; 
+    border-top: 2px solid #eee;
+    border-bottom: none;
+}
+
+.weekly-total { 
+    background-color: var(--accent); 
+    color: white; 
+    text-align: center; 
+    border: none; /* Quitamos el box-shadow por el fondo de color */
+}
+
+.weekly-amount { 
+    font-size: 2rem; 
+    font-weight: bold; 
+}
+
+/* Botón de Borrar */
+.btn-clear { 
+    background-color: #ef4444; 
+    font-size: 0.9rem; 
+    margin-top: 15px;
+}
+.btn-clear:hover {
+    background-color: #dc2626;
+}
+
+/* Nota de centavos */
+.note { 
+    font-size: 0.8rem; 
+    color: #64748b; 
+    margin-top: 5px; 
+    font-style: italic;
+    text-align: right; /* Aseguramos que se alinee a la derecha */
+}
