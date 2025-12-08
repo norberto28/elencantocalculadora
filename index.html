@@ -3,28 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corte Único Diario</title>
-    <link rel="stylesheet" href="style.css"> 
-</head>
+    <title>Corte Diario | Distribución</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Paleta y Tipografía */
+        :root { 
+            --primary: #1e40ff; /* Azul elegante */
+            --bg: #f8fafc; /* Fondo muy claro */
+            --card: #ffffff; 
+            --text-dark: #1f2937; /* Gris oscuro para el texto principal */
+            --text-light: #4b5563; /* Gris medio para notas */
+            --accent: #059669; /* Verde para totales / éxito */
+            --warning: #f59e0b; /* Amarillo/Naranja para deudas */
+            --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra suave y moderna */
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; /* Usamos la fuente Inter */
+            background-color: var(--bg); 
+            color: var(--text-dark); 
+            margin: 0; 
+            padding: 20px 10px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .container { 
+            width: 100%; 
+            max-width: 480px; /* Un poco más ancho para móviles grandes */
+        }
+        h1 { 
+            text-align: center; 
+            font-size: 1.8rem; /* Titulo más grande */
+            margin-bottom: 25px; 
+            color: var(--primary);
+        }
+        
+        /* Tarjeta */
+        .card { 
+            background: var(--card); 
+            padding: 20px; 
+            border-radius: 18px; /* Bordes más redondeados */
+            box-shadow: var(--shadow-subtle); 
+            margin-bottom: 25px; 
+            border: 1px solid #e5e7eb; /* Borde sutil para definir la tarjeta */
+        }
+        
+        /* Input y Label */
+        label { 
+            display: block; 
+            margin-bottom: 10px; 
+            font-weight: 600; /* Semi-bold */
+            font-size: 1rem;
+        }
+        input[type="number"] { 
+            width: 100%; 
+            padding: 18px 15px; /* Más padding para facilitar el tacto */
+            font-size: 1.5rem; /* Número de entrada grande */
+            border: 2px solid #d1d5db; 
+            border-radius: 12px; 
+            box-sizing: border-box; 
+            margin-bottom: 20px; 
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus {
+            border-color: var(--primary); /* Resaltar al enfocar */
+            outline: none;
+        }
+
+        /* Botón Principal */
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background-color: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            margin-bottom: 10px; 
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background-color: #1e3a8a;
+        }
+        button:active {
+            transform: scale(0.99); /* Efecto de click suave */
+        }
+
+        /* Desglose de Reparto */
+        .breakdown-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 10px 0; 
+            border-bottom: 1px solid #f3f4f6; 
+            font-size: 1rem;
+        }
+        .breakdown-row span {
+            color: var(--text-light);
+        }
+        .breakdown-row strong {
+            font-weight: 700;
+        }
+        .breakdown-debt {
+            background-color: #fffbeb; /* Fondo claro para la alerta */
+            padding: 10px 10px; 
+            border-radius: 8px;
+            margin: 5px 0;
+            border: 1px dashed var(--warning);
+        }
+        .breakdown-debt strong {
+            color: var(--warning);
+        }
+        .breakdown-total {
+            font-size: 1.3em; 
+            margin-top: 15px; 
+            padding-top: 15px;
+            border-top: 2px solid var(--primary); /* Línea de separación principal */
+            border-bottom: none;
+        }
+        
+        /* Total Semanal (Accent Card) */
+        .weekly-total { 
+            background-color: var(--accent); 
+            color: white; 
+            text-align: center; 
+            border: none;
+            box-shadow: 0 8px 16px rgba(5, 150, 105, 0.4); /* Sombra de color para destaque */
+            padding: 25px 20px;
+        }
+        .weekly-total > div:first-child {
+            font-weight: 600;
+        }
+        .weekly-amount { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            margin: 5px 0 10px 0;
+        }
+        /* Desglose interno del total semanal */
+        #weeklyBreakdown .breakdown-row {
+            padding: 5px 0;
+            border-bottom: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9em;
+        }
+        #weeklyBreakdown strong {
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Historial y Botón Borrar */
+        .btn-clear { 
+            background-color: #ef4444; 
+            font-size: 0.9rem; 
+            margin-top: 15px;
+        }
+        .btn-clear:hover {
+            background-color: #dc2626;
+        }
+        #historyList > div {
+            border-bottom: 1px solid #eee;
+        }
+        #historyList > div:last-child {
+            border-bottom: none;
+        }
+        .note { 
+            color: var(--text-light); 
+        }
+
+    </style>
+    </head>
 <body>
 
 <div class="container">
-    <h1>📊 Corte Diario (Único)</h1>
+    <h1>💸 Corte y Distribución Diaria</h1>
 
     <div class="card">
         <label for="amount">Ingresa el Total del Día ($):</label>
-        <input type="number" id="amount" placeholder="Ej: 5000" inputmode="decimal">
-        <button id="btnGuardar" type="button">Guardar Corte</button>
+        <input type="number" id="amount" placeholder="Ej: 5000.00" inputmode="decimal">
+        <button id="btnGuardar" type="button">Calcular y Guardar Corte</button>
     </div>
 
     <div class="card weekly-total">
         <div id="weekRange" style="font-size:0.9em; opacity:0.9">Semana actual</div>
-        <div>Total Acumulado</div>
+        <div>TOTAL ACUMULADO</div>
         <div class="weekly-amount" id="weeklySum">$0.00</div>
+        
+        <div id="weeklyBreakdown" style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.4);">
+            </div>
     </div>
 
     <div class="card" id="resultCard" style="display:none; border: 2px solid var(--primary);">
-        <h3 style="margin-top:0">✅ Cálculo Realizado:</h3>
+        <h3 style="margin-top:0; color:var(--primary); font-size:1.4rem;">✅ Distribución del Día:</h3>
         <div class="breakdown-row"><span>Inversión (55%)</span><strong id="resInv">$0.00</strong></div>
         <div class="breakdown-row"><span>Socio 1 (10%)</span><strong id="resP1">$0.00</strong></div>
         <div class="breakdown-row"><span>Socio 2 (10%)</span><strong id="resP2">$0.00</strong></div>
@@ -33,18 +206,196 @@
         </div>
         <div class="note text-right">*Centavos ajustados en Deudas</div>
         <div class="breakdown-row breakdown-total">
-            <span>TOTAL</span><strong id="resTotal">$0.00</strong>
+            <span>TOTAL</span><strong id="resTotal" style="color:var(--primary)">$0.00</strong>
         </div>
     </div>
 
     <div class="card">
-        <h3>📅 Historial (7 días)</h3>
+        <h3 style="color:var(--text-dark)">📅 Historial (Últimos 7)</h3>
         <div id="historyList"></div>
-        <button class="btn-clear" onclick="clearData()">Borrar todo</button>
+        <button class="btn-clear" onclick="clearData()">Borrar todo el Historial</button>
     </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+    const btn = document.getElementById('btnGuardar');
+    const STORAGE_KEY = 'corte_data_v4_unico';
 
+    // --- UTILIDADES ---
+    function roundTo50(num) { return Math.round(num * 2) / 2; }
+    function fmt(num) { return '$' + num.toFixed(2); }
+    function getSimpleDate(dateObj) {
+        return dateObj.toLocaleDateString('es-MX');
+    }
+
+    // --- LÓGICA DE CÁLCULO Y GUARDADO ---
+    function calculateAndSave() {
+        const amountInput = document.getElementById('amount');
+        const amountVal = amountInput.value;
+        
+        if (!amountVal || isNaN(parseFloat(amountVal))) { 
+            alert("⚠️ Escribe una cantidad válida primero."); 
+            return; 
+        }
+        
+        const amount = parseFloat(amountVal);
+        
+        // CÁLCULO
+        let rawInv = amount * 0.55;
+        let rawS1 = amount * 0.10;
+        let rawS2 = amount * 0.10;
+        
+        let inv = roundTo50(rawInv);
+        let socio1 = roundTo50(rawS1);
+        let socio2 = roundTo50(rawS2);
+        
+        let debt = amount - inv - socio1 - socio2;
+        debt = Math.round(debt * 100) / 100;
+        
+        const breakdown = { inv, debt, socio1, socio2 };
+
+        // MOSTRAR RESULTADOS
+        document.getElementById('resInv').textContent = fmt(inv);
+        document.getElementById('resDebt').textContent = fmt(debt);
+        document.getElementById('resP1').textContent = fmt(socio1);
+        document.getElementById('resP2').textContent = fmt(socio2);
+        document.getElementById('resTotal').textContent = fmt(amount);
+        document.getElementById('resultCard').style.display = 'block';
+
+        // GUARDADO INTELIGENTE
+        try {
+            const today = new Date();
+            const todayStr = getSimpleDate(today);
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const existingIndex = history.findIndex(item => getSimpleDate(new Date(item.date)) === todayStr);
+
+            const newRecord = { 
+                id: Date.now(), 
+                date: today.toISOString(), 
+                amount: amount, 
+                breakdown: breakdown 
+            };
+
+            if (existingIndex !== -1) {
+                if (confirm(`⚠️ Ya existe un corte del día ${todayStr}. ¿Deseas SUSTITUIR la cuenta por esta nueva de ${fmt(amount)}?`)) {
+                    history[existingIndex] = newRecord;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+                    alert("✅ Corte actualizado correctamente.");
+                } else {
+                    return; 
+                }
+            } else {
+                history.unshift(newRecord);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            }
+
+            renderHistory();
+            renderWeeklyTotal();
+            amountInput.value = '';
+
+        } catch (e) {
+            console.error("Error al guardar:", e);
+            alert("Error al guardar (revisa si el almacenamiento local está disponible).");
+        }
+    }
+    
+    btn.addEventListener('click', calculateAndSave);
+
+
+    // --- RENDERS DE VISTA ---
+
+    function renderHistory() {
+        try {
+            const list = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+            list.innerHTML = '';
+            
+            const recentHistory = history.slice(0, 7);
+
+            recentHistory.forEach(item => {
+                const d = new Date(item.date);
+                const fecha = d.toLocaleDateString('es-MX', {weekday:'short', day:'numeric'}).replace('.', '');
+                
+                list.innerHTML += `
+                <div style="padding:10px 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:600; color:var(--primary); text-transform:capitalize;">${fecha}</span>
+                        <span style="font-weight:700; font-size:1.1em">${fmt(item.amount)}</span>
+                    </div>
+                </div>`;
+            });
+            if(recentHistory.length === 0) list.innerHTML = '<div style="text-align:center; color:var(--text-light)">Sin registros</div>';
+        } catch(e) {}
+    }
+
+    // Renderiza el total semanal Y el desglose acumulado
+    function renderWeeklyTotal() {
+        try {
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const today = new Date();
+            
+            const dayOfWeek = today.getDay(); 
+            const distToMonday = (dayOfWeek + 6) % 7; 
+            
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - distToMonday);
+            monday.setHours(0,0,0,0); 
+
+            let total = 0;
+            let weeklyInv = 0;
+            let weeklyDebt = 0;
+            let weeklySocio1 = 0;
+            let weeklySocio2 = 0;
+
+            history.forEach(item => {
+                const itemDate = new Date(item.date);
+                if (itemDate >= monday) {
+                    total += item.amount;
+                    
+                    if (item.breakdown) {
+                        weeklyInv += item.breakdown.inv;
+                        weeklyDebt += item.breakdown.debt;
+                        weeklySocio1 += item.breakdown.socio1;
+                        weeklySocio2 += item.breakdown.socio2;
+                    }
+                }
+            });
+
+            document.getElementById('weeklySum').textContent = fmt(total);
+            
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            document.getElementById('weekRange').textContent = 
+                `Del ${monday.getDate()}/${monday.getMonth()+1} al ${sunday.getDate()}/${sunday.getMonth()+1}`;
+
+            const breakdownHtml = `
+                <div class="breakdown-row"><span>Inv. Acumulada</span><strong>${fmt(weeklyInv)}</strong></div>
+                <div class="breakdown-row"><span>Deudas Acum.</span><strong>${fmt(weeklyDebt)}</strong></div>
+                <div class="breakdown-row"><span>Socio 1 Acum.</span><strong>${fmt(weeklySocio1)}</strong></div>
+                <div class="breakdown-row"><span>Socio 2 Acum.</span><strong>${fmt(weeklySocio2)}</strong></div>
+            `;
+
+            document.getElementById('weeklyBreakdown').innerHTML = breakdownHtml;
+
+        } catch(e) {}
+    }
+
+
+    // --- CONTROL DE DATOS ---
+    function clearData() {
+        if(confirm('⚠️ ¿Estás seguro de borrar TODO el historial? Esta acción es irreversible.')) {
+            localStorage.removeItem(STORAGE_KEY);
+            renderHistory();
+            renderWeeklyTotal();
+            document.getElementById('resultCard').style.display = 'none';
+            alert('Historial borrado.');
+        }
+    }
+    
+    // Iniciar al cargar
+    renderHistory();
+    renderWeeklyTotal();
+</script>
 </body>
 </html>
